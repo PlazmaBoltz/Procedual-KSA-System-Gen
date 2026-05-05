@@ -1,0 +1,91 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>KSA_PSG</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="StarMap.API">
+      <HintPath>C:\CS-Refs\StarMap.API.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="StarMap.Types">
+      <HintPath>C:\CS-Refs\StarMap.Types.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>C:\CS-Refs\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Brutal.ImGui">
+      <HintPath>C:\CS-Refs\Brutal.ImGui.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Brutal.ImGui.Abstractions">
+      <HintPath>C:\CS-Refs\Brutal.ImGui.Abstractions.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="KSA">
+      <HintPath>C:\CS-Refs\KSA.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Brutal.Core.Numerics">
+  <HintPath>C:\CS-Refs\Brutal.Core.Numerics.dll</HintPath>
+  <Private>false</Private>
+  </Reference>
+  <Reference Include="Brutal.Core.Common">
+    <HintPath>C:\CS-Refs\Brutal.Core.Common.dll</HintPath>
+    <Private>false</Private>
+  </Reference>
+  <Reference Include="Brutal.ImGui.Extensions">
+    <HintPath>C:\CS-Refs\Brutal.ImGui.Extensions.dll</HintPath>
+    <Private>false</Private>
+  </Reference>
+  <Reference Include="Brutal.Vulkan">
+    <HintPath>C:\CS-Refs\Brutal.Vulkan.dll</HintPath>
+    <Private>false</Private>
+  </Reference>
+  <Reference Include="Brutal.Core.Strings">
+    <HintPath>C:\CS-Refs\Brutal.Core.Strings.dll</HintPath>
+    <Private>false</Private>
+  </Reference>
+  <Reference Include="Brutal.Glfw">
+    <HintPath>C:\CS-Refs\Brutal.Glfw.dll</HintPath>
+    <Private>false</Private>
+  </Reference>
+  <Reference Include="Planet.Render.Core">
+    <HintPath>C:\CS-Refs\Planet.Render.Core.dll</HintPath>
+    <Private>false</Private>
+  </Reference>
+  <Reference Include="Brutal.Ktx">
+    <HintPath>C:\CS-Refs\Brutal.Ktx.dll</HintPath>
+    <Private>false</Private>
+  </Reference>
+  <Reference Include="Brutal.Texture">
+    <HintPath>C:\CS-Refs\Brutal.Texture.dll</HintPath>
+    <Private>false</Private>
+  </Reference>
+  <Reference Include="Tomlet">
+    <HintPath>C:\CS-Refs\Tomlet.dll</HintPath>
+    <Private>false</Private>
+  </Reference>
+  </ItemGroup>
+
+</Project>
