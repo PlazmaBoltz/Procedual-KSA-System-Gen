@@ -52,8 +52,17 @@ public class KSA_PSG_Functions
         public required double radius;
         public required double mass;
         public required (double, double) terrain;
-        public required KSA.Orbit orbit;
+        public required double apoapsis;
+        public required double periapsis;
+        public required double inclination;
+        public required double eccentricity;
+        public required double ascendingNode;
+        public required Star parent;
         public Moon[]? moons;
+        public override string ToString()
+        {
+            return $"Planet Name: {name}, Type: {type}, Radius: {radius} km, Mass: {mass} M⊕, Terrain: ({terrain.Item1}, {terrain.Item2}), Apoapsis: {apoapsis} km, Periapsis: {periapsis} km, Inclination: {inclination}°, Eccentricity: {eccentricity}, Ascending Node: {ascendingNode}°";
+        }
     }
     public class Moon
     {
@@ -301,8 +310,20 @@ public class KSA_PSG_Functions
         }
         return star;
     }
-    public void GeneratePlanet(String type, int seed)
+    public Planet GeneratePlanet(String type, String parentType, Star parent, int seed, int index = 0)
     {
-        return;
+        var planet = new Planet() { name = "", type = "", radius = 0, mass = 0, terrain = (0, 0), apoapsis = 0, periapsis = 0, inclination = 0, eccentricity = 0, ascendingNode = 0, parent = parent };
+        var Random = new Random(seed);
+        planet.name =  GenerateSystemName(seed) + " " + lowerCasedLetters[index];
+        planet.type = planetTypes[new Random(seed+index).Next(planetTypes.Length)];
+        planet.radius = new Random(seed+index).Next(2000, 10000);
+        planet.mass = new Random(seed+index).Next(1, 1000);
+        planet.terrain = (new Random(seed+index).NextDouble()*-0.005*planet.radius, new Random(seed+index).NextDouble()*0.01*planet.radius);
+        planet.apoapsis = new Random(seed+index).Next(int.Parse(Math.Round(parent.radius*1.5+(parent.radius*Math.Sqrt(index))).ToString()), int.Parse(Math.Round(parent.radius*1.5+(parent.radius*Math.Sqrt(index))).ToString())*3);
+        planet.periapsis = new Random(seed^2+index).Next(int.Parse(Math.Round(parent.radius*1.5+(parent.radius*Math.Sqrt(index))).ToString()), int.Parse(Math.Round(parent.radius*1.5+(parent.radius*Math.Sqrt(index))).ToString())*3);
+        planet.inclination = new Random(seed+index).NextDouble() * Math.Abs(Math.Log2(planet.mass)) + new Random(seed+index).NextDouble() * Math.Log10(planet.apoapsis);
+        planet.eccentricity = Math.Abs((planet.apoapsis - planet.periapsis) / (planet.apoapsis + planet.periapsis));
+        planet.ascendingNode = new Random(seed+index).NextDouble() * 360;
+        return planet;
     }
 }

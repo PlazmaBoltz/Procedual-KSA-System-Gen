@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("KSA-PSG")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fc2719f441cfc4f611ce46d8d92ab9bdb10da598")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d30b69cf75e5f1e40d6814716c655d323c2af05d")]
 [assembly: System.Reflection.AssemblyProductAttribute("KSA-PSG")]
 [assembly: System.Reflection.AssemblyTitleAttribute("KSA-PSG")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

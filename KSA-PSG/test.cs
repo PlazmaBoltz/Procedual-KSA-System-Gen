@@ -13,4 +13,9 @@ for (int i = 0; i < 10; i++)
     Console.WriteLine(generator.GenerateStar("Young System", seed+i, 0));
 
     Console.WriteLine(generator.GenerateSystem("Binary-Uniary", seed+i, 0));
+
+    Console.WriteLine(generator.GeneratePlanet("Gas Giant", "Binary", generator.GenerateStar("Binary", seed+i, 0), seed+i, 0));
+    Console.WriteLine(generator.GeneratePlanet("Gas Giant", "Binary", generator.GenerateStar("Binary", seed+i, 0), seed+i, 1));
+    Console.WriteLine(generator.GeneratePlanet("Gas Giant", "Binary", generator.GenerateStar("Binary", seed+i, 0), seed+i, 2));
+    Console.WriteLine(generator.GeneratePlanet("Gas Giant", "Binary", generator.GenerateStar("Binary", seed+i, 0), seed+i, 3));
 }
