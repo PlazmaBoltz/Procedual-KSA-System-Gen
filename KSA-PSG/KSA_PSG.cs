@@ -5,7 +5,12 @@ using Brutal;
 
 public class KSA_PSG_Functions
 {
-    private String[] starTypes = new String[] { "Red Dwarf", "Yellow Dwarf", "Blue Giant", "White Dwarf", "Neutron Star", "Brown Dwarf", "Black Hole", "Red Giant", "Rogue" };
+    private String[] starTypes = new String[] { "Red Dwarf", "Yellow Dwarf", "Blue Giant", "White Dwarf", "Neutron Star", "Brown Dwarf", "Black Hole", "Red Giant", "Rogue", "Class B", "Pulsar" };
+    private String[] binaryTypes = new String[] { "Neutron Star", "Blue Giant","Blue Giant", "Black Hole", "Class B", "Class B", "Class B", "Class B" };
+    private String[] trinaryTypes = new String[] { "Red Dwarf", "Yellow Dwarf", "Blue Giant", "Black Hole", "Neutron Star", "Red Giant", "Class B" };
+    private String[] uniarySmallTypes = new String[] { "Red Dwarf", "Yellow Dwarf", "Brown Dwarf"};
+    private String[] youngTypes = new String[] { "Red Dwarf", "Yellow Dwarf"};
+    private String[] deadSystemTypes = new String[] { "White Dwarf", "Neutron Star" };
     private String[] systemTypes = new String[] { "Binary", "Trinary", "Uniary", "Binary-Uniary", "Independent-Binary", "Pulsar", "Black Hole", "Dead System", "Young System", "Red Giant"};
     private String[] planetTypes = new String[] { "Barren", "Super-Earth", "Cold Jupiter", "Hot Jupiter", "Mini-Neptune", "Neptune", "Terra", "Lava", "Volcanic", "Desert", "Venus", "Basaltic", "Dead World", "Dwarf", "Astroid", "KBO", "Underground-Ocean", "Gaia", "Ocean World", "Gas Giant", "Artificial", "Abandoned", "Comet" };
     private String[] moonTypes = new string[] {"Dwarf", "Barren", "Volcanic", "Ice", "Ocean", "Terra", "Artificial", "Abandoned", "Dwarf"};
@@ -23,25 +28,41 @@ public class KSA_PSG_Functions
         public required String type;
         public required Star[] stars;
         public Planet[]? planets;
+        public override string ToString()
+        {
+            return $"System Name: {name}, Type: {type}, Stars: {stars.Length}, Planets: {(planets != null ? planets.Length : 0)}\nStars:\n{string.Join("\n", stars)}\nPlanets:\n{(planets != null ? string.Join("\n", planets) : "None")}";
+        }
     }
     public class Star
     {
         public required String name;
         public required String type;
-        public required int radius;
+        public required double radius;
         public required double luminosity;
-        public required int mass;
+        public required double mass;
+        public override string ToString()
+        {
+            return $"Star Name: {name}, Type: {type}, Radius: {radius*696340} km, Luminosity: {luminosity} L☉, Mass: {mass} M☉";
+        }
     }
     public class Planet
     {
         public required String name;
-        public  required String type;
+        public required String type;
+        public required double radius;
+        public required double mass;
+        public required (double, double) terrain;
+        public required KSA.Orbit orbit;
         public Moon[]? moons;
     }
     public class Moon
     {
         public required String name;
         public required String type;
+        public required int radius;
+        public required int mass;
+        public required (double, double) terrain;
+        public required KSA.Orbit orbit;
     }
     public string GenerateSystemName(int seed)
     {
@@ -57,117 +78,228 @@ public class KSA_PSG_Functions
             return systemNumericPrefix[tempRand2.Next(systemNumericPrefix.Length)] + "-" + tempRand2.Next(1000);
         }
     }
-    public void GenerateSystems(int numberOfSystems, int seed)
+    public System[] GenerateSystems(int numberOfSystems, int seed)
     {
         var rand = new Random(seed);
+        var Systems = new System[numberOfSystems];
         for (int i = 0; i < numberOfSystems; i++)
         {
-            GenerateSystem(systemTypes[rand.Next(systemTypes.Length)], seed+i);
+            Systems[i] = GenerateSystem(systemTypes[rand.Next(systemTypes.Length)], seed+i, i);
         }
+        return Systems;
     }
-    public void GenerateSystem(String type, int seed)
+    public System GenerateSystem(String type, int seed, int index = 0)
     {
         var rand = new Random(seed);
         var numberOfStars = 1;
+        var stars = new Star[0];
         if (type == "Binary")
         {
-            var Star1 = GenerateStar(type, seed);
-            var Star2 = GenerateStar(type, seed);
+            numberOfStars = 2;
+            var Star1 = GenerateStar(type, seed,0);
+            var Star2 = GenerateStar(type, seed,1);
             var planetCount1 = rand.Next(2,6);
+            stars = new Star[numberOfStars];
+            stars[0] = Star1;
+            stars[1] = Star2;
         }
         else if (type == "Trinary")
         {
-            var Star1 = GenerateStar(type, seed);
-            var Star2 = GenerateStar(type, seed);
-            var Star3 = GenerateStar(type, seed);
+            numberOfStars = 3;
+            var Star1 = GenerateStar(type, seed,0);
+            var Star2 = GenerateStar(type, seed,1);
+            var Star3 = GenerateStar(type, seed,2);
+            stars = new Star[numberOfStars];
+            stars[0] = Star1;
+            stars[1] = Star2;
+            stars[2] = Star3;
             var planetCount1 = rand.Next(1,4);
         }
         else if (type == "Binary-Uniary")
         {
-            var Star1 = GenerateStar("Binary", seed);
-            var Star2 = GenerateStar("Binary", seed);
-            var Star3 = GenerateStar("Uniary-Small", seed);
+            numberOfStars = 3;
+            var Star1 = GenerateStar("Binary", seed,0);
+            var Star2 = GenerateStar("Binary", seed,1);
+            var Star3 = GenerateStar("Uniary-Small", seed,2);
             var planetCount1 = rand.Next(1,4);
             var planetCount2 = rand.Next(1,4);
+            stars = new Star[numberOfStars];
+            stars[0] = Star1;
+            stars[1] = Star2;
+            stars[2] = Star3;
         }
         else if (type == "Independent-Binary")
         {
-            var Star1 = GenerateStar("Uniary", seed);
-            var Star2 = GenerateStar("Uniary-Small", seed);
+            numberOfStars = 2;
+            var Star1 = GenerateStar("Uniary", seed,0);
+            var Star2 = GenerateStar("Uniary-Small", seed,1);
             var planetCount1 = rand.Next(1,4);
             var planetCount2 = rand.Next(1,4);
+            stars = new Star[numberOfStars];
+            stars[0] = Star1;
+            stars[1] = Star2;
         }
         else if (type == "Pulsar")
         {
+            numberOfStars = 1;
             var Star1 = GenerateStar("Pulsar", seed);
             var planetCount1 = rand.Next(0,3);
+            stars = new Star[numberOfStars];
+            stars[0] = Star1;
         }
         else if (type == "Black Hole")
         {
+            numberOfStars = 1;
             var Star1 = GenerateStar("Black Hole", seed);
             var planetCount1 = rand.Next(0,3);
+            stars = new Star[numberOfStars];
+            stars[0] = Star1;
         }
         else if (type == "Dead System")
         {
+            numberOfStars = 1;
             var Star1 = GenerateStar("Dead System", seed);
             var planetCount1 = rand.Next(2,5);
+            stars = new Star[numberOfStars];
+            stars[0] = Star1;
         }
         else if (type == "Young System")
         {
+            numberOfStars = 1;
             var Star1 = GenerateStar("Young System", seed);
             var planetCount1 = rand.Next(6,10);
+            stars = new Star[numberOfStars];
+            stars[0] = Star1;
         }
         else if (type == "Red Giant")
         {
+            numberOfStars = 1;
             var Star1 = GenerateStar("Red Giant", seed);
             var planetCount1 = rand.Next(0,2);
+            stars = new Star[numberOfStars];
+            stars[0] = Star1;
         }
         else
         {
+            numberOfStars = 1;
             var Star1 = GenerateStar("Uniary", seed);
             var planetCount1 = rand.Next(3,9);
+            stars = new Star[numberOfStars];
+            stars[0] = Star1;
         }
-        Star[] stars = new Star[numberOfStars];
         var system = new System() { name = GenerateSystemName(seed), type = type, stars = stars };
+        return system;
     }
     public Star GenerateStar(String type, int seed, int index = 0)
     {
+        var star = new Star() { name = "", type = "", radius = 0, luminosity = 0.0, mass = 0.0 };
+        var Random = new Random(seed);
         if (type == "Binary")
         {
-            return new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = starTypes[new Random(seed).Next(starTypes.Length)], radius = new Random(seed).Next(100000, 1000000), luminosity = new Random(seed).NextDouble() * 100, mass = new Random(seed).Next(1, 100) };
+            star = new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = binaryTypes[new Random(seed+index).Next(binaryTypes.Length)], radius = new Random(seed+index).Next(100000, 1000000), luminosity = new Random(seed+index).NextDouble() * 100, mass = new Random(seed+index).Next(1, 100) };
         }
         else if (type == "Trinary")
         {
-            return new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = starTypes[new Random(seed).Next(starTypes.Length)], radius = new Random(seed).Next(100000, 1000000), luminosity = new Random(seed).NextDouble() * 100, mass = new Random(seed).Next(1, 100) };
-        }
-        else if (type == "Binary-Uniary")
-        {
-            return new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = starTypes[new Random(seed).Next(starTypes.Length)], radius = new Random(seed).Next(100000, 1000000), luminosity = new Random(seed).NextDouble() * 100, mass = new Random(seed).Next(1, 100) };
+            star = new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = trinaryTypes[new Random(seed+index).Next(trinaryTypes.Length)], radius = new Random(seed+index).Next(100000, 1000000), luminosity = new Random(seed+index).NextDouble() * 100, mass = new Random(seed+index).Next(1, 100) };
         }
         else if (type == "Uniary-Small")
         {
-            return new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = starTypes[new Random(seed).Next(starTypes.Length)], radius = new Random(seed).Next(50000, 500000), luminosity = new Random(seed).NextDouble() * 50, mass = new Random(seed).Next(1, 50) };
+            star = new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = uniarySmallTypes[new Random(seed+index).Next(uniarySmallTypes.Length)], radius = new Random(seed+index).Next(50000, 500000), luminosity = new Random(seed+index).NextDouble() * 50, mass = new Random(seed+index).Next(1, 50) };
         }
         else if (type == "Uniary")
         {
-            return new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = starTypes[new Random(seed).Next(starTypes.Length)], radius = new Random(seed).Next(100000, 1000000), luminosity = new Random(seed).NextDouble() * 100, mass = new Random(seed).Next(1, 100) };
+            star = new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = starTypes[new Random(seed+index).Next(starTypes.Length)], radius = new Random(seed+index).Next(100000, 1000000), luminosity = new Random(seed+index).NextDouble() * 100, mass = new Random(seed+index).Next(1, 100) };
         }
         else if (type == "Pulsar")
         {
-            return new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = "Pulsar", radius = new Random(seed).Next(10000, 50000), luminosity = new Random(seed).NextDouble() * 10, mass = new Random(seed).Next(1, 10) };
+            star = new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = "Pulsar", radius = new Random(seed+index).Next(10000, 50000), luminosity = new Random(seed+index).NextDouble() * 10, mass = new Random(seed+index).Next(1, 10) };
         }
         else if (type == "Black Hole")
         {
-            return new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = "Black Hole", radius = new Random(seed).Next(5000, 20000), luminosity = 0, mass = new Random(seed).Next(10, 50) };
+            star = new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = "Black Hole", radius = new Random(seed+index).Next(5000, 20000), luminosity = 0, mass = new Random(seed+index).Next(10, 50) };
         }
         else if (type == "Dead System")
         {
-            return new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = "Dead System", radius = new Random(seed).Next(50000, 500000), luminosity = 0, mass = new Random(seed).Next(1, 50) };
+            star = new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = deadSystemTypes[new Random(seed+index).Next(deadSystemTypes.Length)], radius = new Random(seed+index).Next(50000, 500000), luminosity = 0, mass = new Random(seed+index).Next(1, 50) };
         }
         else
         {
-            return new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = starTypes[new Random(seed).Next(starTypes.Length)], radius = new Random(seed).Next(100000, 1000000), luminosity = new Random(seed).NextDouble() * 100, mass = new Random(seed).Next(1, 100) };
+            star = new Star() { name = GenerateSystemName(seed) + " " + letters[index], type = starTypes[new Random(seed+index).Next(starTypes.Length)], radius = new Random(seed+index).Next(100000, 1000000), luminosity = new Random(seed+index).NextDouble() * 100, mass = new Random(seed+index).Next(1, 100) };
         }
+        if (star.type == "Black Hole")
+        {
+            star.mass = new Random(seed+index).Next(10, 50);
+            star.radius = double.Parse((new Random(seed+index).Next(5000, 20000) * 0.0000021110377).ToString());
+            star.luminosity = 0.05 * star.mass;
+
+        }
+        else if (star.type == "Neutron Star")
+        {
+            star.mass = new Random(seed+index).Next(1, 10)*0.1;
+            star.radius = double.Parse((new Random(seed+index).Next(10000, 50000) * 0.0001).ToString());
+            star.luminosity = 0.1 * star.mass;
+        }
+        else if (star.type == "White Dwarf")
+        {
+            star.mass = new Random(seed+index).Next(1, 50)*0.005;
+            star.radius = double.Parse((new Random(seed+index).Next(5000, 50000) * 0.00001).ToString());
+            star.luminosity = 0.01 * star.mass;
+        }
+        else if (star.type == "Red Giant")
+        {
+            star.mass = new Random(seed+index).Next(1, 100);
+            star.radius = new Random(seed+index).Next(100, 1000);
+            star.luminosity = 100 * star.mass;
+        }
+        else if (star.type == "Blue Giant")
+        {
+            star.mass = new Random(seed+index).Next(10, 300);
+            star.radius = new Random(seed+index).Next(100, 1000);
+            star.luminosity = 1000 * star.mass;
+        }
+        else if (star.type == "Yellow Dwarf")
+        {
+            star.mass = new Random(seed+index).Next(10, 50)*0.05;
+            star.radius = new Random(seed+index).Next(10, 50)*0.05;
+            star.luminosity = 1 * star.mass;
+        }
+        else if (star.type == "Red Dwarf")
+        {
+            star.mass = new Random(seed+index).Next(1, 10)*0.1;
+            star.radius = new Random(seed+index).Next(1, 10)*0.1;
+            star.luminosity = 0.5 * star.mass;
+        }
+        else if (star.type == "Brown Dwarf")
+        {
+            star.mass = new Random(seed+index).Next(1, 10)*0.005;
+            star.radius = new Random(seed+index).Next(50000, 500000)*0.0000001;
+            star.luminosity = 0.005 * star.mass;
+        }
+        else if (star.type == "Rogue")
+        {
+            star.mass = new Random(seed+index).Next(1, 10)*0.00005;
+            star.radius = new Random(seed+index).Next(1, 10)*0.00001;
+            star.luminosity = 0;
+        }
+        else if (star.type == "Class B")
+        {
+            star.mass = new Random(seed+index).Next(10, 50)*0.075;
+            star.radius = new Random(seed+index).Next(10, 50)*0.075;
+            star.luminosity = 5 * star.mass;
+        }
+        else if (star.type == "Pulsar")
+        {
+            star.mass = new Random(seed+index).Next(1, 10)*0.1;
+            star.radius = double.Parse((new Random(seed+index).Next(10000, 50000) * 0.0001).ToString());
+            star.luminosity = 1 * star.mass;
+        }
+        else
+        {
+            star.mass = new Random(seed+index).Next(1, 100);
+            star.radius = new Random(seed+index).Next(100, 500); 
+            star.luminosity = 1 * star.mass;
+        }
+        return star;
     }
     public void GeneratePlanet(String type, int seed)
     {
