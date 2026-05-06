@@ -155,3 +155,4 @@ C:\Users\gjcer\OneDrive\Desktop\modding\Procedual-KSA-System-Gen\KSA-PSG\obj\Deb
 C:\Users\gjcer\OneDrive\Desktop\modding\Procedual-KSA-System-Gen\KSA-PSG\obj\Debug\net10.0\KSA-PSG.pdb
 C:\Users\gjcer\OneDrive\Desktop\modding\Procedual-KSA-System-Gen\KSA-PSG\obj\Debug\net10.0\KSA-PSG.genruntimeconfig.cache
 C:\Users\gjcer\OneDrive\Desktop\modding\Procedual-KSA-System-Gen\KSA-PSG\obj\Debug\net10.0\ref\KSA-PSG.dll
+C:\Users\gjcer\OneDrive\Desktop\modding\Procedual-KSA-System-Gen\KSA-PSG\obj\Debug\net10.0\KSA-PSG.sourcelink.json
